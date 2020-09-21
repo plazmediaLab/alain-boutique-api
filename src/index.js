@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 
 /**
  * 
@@ -12,7 +12,7 @@ import app from './app';
  * DB connection started 
  * @settings // Uncomment to start the connection to the database
  */
-// import './database';
+import './db';
 
 /**
  * 
