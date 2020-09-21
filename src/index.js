@@ -2,10 +2,17 @@ require('dotenv').config()
 
 /**
  * 
- * Express APP setting  import
+ * Express APP setting import
  * 
  */
 import app from './app';
+
+/**
+ * 
+ * DB connection started 
+ * @settings // Uncomment to start the connection to the database
+ */
+// import './database';
 
 /**
  * 
