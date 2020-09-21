@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import pkg from '../package.json';
+import { RoleSeeder } from './libs/InitialSetups';
 
 /**
  * 
@@ -20,10 +21,10 @@ app.set('pkg', pkg);
 
 /**
  * 
- * Initials Setup inport
+ * Initials Setup
  * 
  */
-// ======= Set here
+RoleSeeder();
 
 /**
  * 
