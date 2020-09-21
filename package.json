@@ -1,0 +1,37 @@
+{
+  "name": "alain-boutique-api",
+  "version": "0.0.1",
+  "description": "Control de ventas Alain Boutique / API",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node src",
+    "build": "babel src --out-dir build",
+    "dev": "nodemon src --exec babel-node"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "javascript",
+    "jwt"
+  ],
+  "author": "Adrian Nieves Uribe <adriangd.1337@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^4.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.6",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.5",
+    "nodemon": "^2.0.4"
+  }
+}
