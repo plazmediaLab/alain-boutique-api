@@ -17,7 +17,7 @@ app.set('pkg', pkg);
  * Routers import
  * 
  */
-// ======= Import here
+import UserRouters from './routes/UserRouters';
 
 /**
  * 
@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
  * Set routes
  * 
  */
-// ======= Set here
+app.use('/api/user', UserRouters);
 
 /** ================================
  * Set routes

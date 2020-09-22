@@ -25,7 +25,9 @@
     "helmet": "^4.1.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.6",
-    "morgan": "^1.10.0"
+    "mongoose-unique-validation": "^0.1.0",
+    "morgan": "^1.10.0",
+    "object-hash": "^2.0.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
