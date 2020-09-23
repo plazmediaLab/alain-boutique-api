@@ -37,7 +37,6 @@ app.use(bodyParser.urlencoded({ extended: false })); //-> parse application/x-ww
 app.use(bodyParser.json()); // -> parse application/json
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(decodedToken);
 
 /**
  * 
@@ -60,7 +59,7 @@ app.get('/', (req, res) => {
  * 
  */
 app.use('/api/user', UserRouters);
-app.use('/api/group', GroupRouters);
+app.use('/api/group', decodedToken, GroupRouters);
 
 /** ================================
  * Set routes

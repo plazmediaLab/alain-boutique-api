@@ -19,6 +19,7 @@ class UserController {
       if (password.length < 8) {
         return res.status(400).json({ error: 400, message: 'La CONTRASEÑA debe de tener al menos 8 caracteres' });
       }
+      
       // New model instance
       const newUser = new User({
         name,

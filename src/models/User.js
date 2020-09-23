@@ -23,7 +23,7 @@ const UserSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'La CONTRASEÑA es requerida.']
+      required: [true, 'La CONTRASEÑA es requerida.'],
     },
     img: {
       type: String,
