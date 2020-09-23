@@ -12,7 +12,7 @@ mongoose.connect(`mongodb://localhost:27017/${process.env.DB_NAME}`, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-    useFindAndModify: true
+    useFindAndModify: false
 }, (err) => {
     if (!err) {
         console.log('SUCCESS on MongoDB Connection');

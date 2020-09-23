@@ -1,5 +1,4 @@
 import Group from '../models/Group';
-import User from '../models/User';
 import slugifyProccess from '../helpers/slugifyProccess';
 
 class GroupController {
@@ -15,11 +14,11 @@ class GroupController {
         user_id: [req.user_id]
       });
   
+      // Validate unique group name per user
       const groups = await Group.find({ 'user_id': req.user_id });
-      // groups.map(x => x.name === slugifyProccess(newGroup.name) ? res.status(400).json({ok: false , message: 'Ya existe creado un NOMBRE de grupo igual.'}) : true);
       groups.map(x => {
-        if(x.name === slugifyProccess(newGroup.name)){
-          return res.status(400).json({ok: false , message: 'Ya existe un GRUPO creado con el mismo nombre.'});
+        if(x.slug === slugifyProccess(newGroup.name)){
+          throw {ok: false , message: 'Ya existe un GRUPO creado con el mismo nombre.'};
         }
       });
 
@@ -32,7 +31,7 @@ class GroupController {
     } catch (error) {
       return res.status(400).json(error);
     }
-  }
+  };
 
   async index(req, res) {
 
@@ -41,35 +40,77 @@ class GroupController {
       const groups = await Group.find({ 'user_id': req.user_id });
 
       // Success response
-      return res.status(200).json({ok: true, group: groups});
+      return res.status(200).json({ok: true, groups});
 
     } catch (error) {
-      return res.status(400).json(error);
+      return res.status(404).json(error);
     }
 
-    return res.json('Get groups...');
-  }
+  };
 
   async show(req, res) {
 
-    const ID = req.params.id;
+    try {
 
-    return res.json(`Get group for ID: ${ID}`);
-  }
+      const group = await Group.findById(req.params.id);
+
+      if(!group) res.status(404).json({ok: false , message: 'No se encontro el elemento'}); 
+
+      // Success response
+      return res.status(200).json({ok: true, group});
+      
+    } catch (error) {
+      return res.status(404).json(error);
+    }
+
+  };
 
   async update(req, res) {
 
-    const ID = req.params.id;
+    if(req.body.name) req.body.name = slugifyProccess(req.body.name);
 
-    return res.json(`Update group: ${ID}`);
-  }
+    try {
+
+      // Validate unique group name per user
+      const groups = await Group.find({ 'user_id': req.user_id });
+      groups.map(x => {
+        if(x.slug === slugifyProccess(newGroup.name)){
+          throw {ok: false , error: 'Ya existe un GRUPO creado con el mismo nombre.'};
+        }
+      });
+      
+      await Group.findByIdAndUpdate(req.params.id,req.body,{
+        new: true
+      }, (err, response) => {
+
+        if(err) res.status(404).json({ok: false , error: err});
+
+        // Success response
+        return res.status(200).json({ok: true, group: response});
+
+      });
+
+    } catch (error) {
+      return res.status(404).json(error);
+    }
+
+  };
 
   async destroy(req, res) {
 
-    const ID = req.params.id;
+    try {
 
-    return res.json(`Delete group: ${ID}`);
-  }
+      const doc = await Group.findByIdAndDelete(req.params.id);
+      
+      if(!doc) throw {ok: false , message: 'El elemento no existe o ya fue eliminado previamente.'};
+  
+      return res.status(200).json({ok: true, message: 'El elemento fue eliminado con éxito.'});
+
+    } catch (error) {
+      return res.status(404).json(error); 
+    }
+    
+  };
 }
 
 export default new GroupController();

@@ -8,7 +8,9 @@ const GroupSchema = mongoose.Schema(
       type: String,
       required: [true, 'El NOMBRE del grupo es requerido.'],
       trim: true,
-      // unique: '{PATH}: Ya existe un GRUPO con ese nombre.'
+    },
+    slug: {
+      type: String,
     },
     color: {
       type: String,
@@ -37,7 +39,7 @@ GroupSchema.plugin(uniqueValidator);
  * init => sync
  */
 GroupSchema.pre('validate', function(next){
-  this.name = slugifyProccess(this.name)
+  this.slug = slugifyProccess(this.name)
   next();
 });
 
