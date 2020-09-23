@@ -46,7 +46,6 @@ class UserController {
   
       // Success response
       return res.status(200).json({ok: true, authorization: token, /*user: saveUser*/});
-      // return res.json({ ok: true, newUser });
       
     } catch (error) {
       return res.status(400).json(error);

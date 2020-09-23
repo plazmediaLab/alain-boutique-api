@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import pkg from '../package.json';
 import { RoleSeeder } from './libs/InitialSetups';
+import { decodedToken } from './middlewares';
 
 /**
  * 
@@ -18,6 +19,7 @@ app.set('pkg', pkg);
  * 
  */
 import UserRouters from './routes/UserRouters';
+import GroupRouters from './routes/GroupRouters';
 
 /**
  * 
@@ -35,6 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false })); //-> parse application/x-ww
 app.use(bodyParser.json()); // -> parse application/json
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(decodedToken);
 
 /**
  * 
@@ -57,6 +60,7 @@ app.get('/', (req, res) => {
  * 
  */
 app.use('/api/user', UserRouters);
+app.use('/api/group', GroupRouters);
 
 /** ================================
  * Set routes

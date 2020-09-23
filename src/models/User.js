@@ -19,6 +19,7 @@ const UserSchema = mongoose.Schema(
       required: [true, "El EMAIL es requerido."],
       unique: '{PATH} tiene que ser único, ya existe otro registro con el mismo valor.',
       validate: [validateEmail, 'Introdusca un CORREO electrónico valido.'],
+      trim: true
     },
     password: {
       type: String,
