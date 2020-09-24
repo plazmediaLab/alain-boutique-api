@@ -37,7 +37,11 @@ class GroupController {
 
     try {
       
-      const groups = await Group.find({ 'user_id': req.user_id });
+      const groups = await Group.find({ 'user_id': req.user_id }, ['-user_id'], {
+        sort: {
+          createdAt: -1
+        }
+      });
 
       // Success response
       return res.status(200).json({ok: true, groups});
@@ -67,20 +71,23 @@ class GroupController {
 
   async update(req, res) {
 
-    if(req.body.name) req.body.name = slugifyProccess(req.body.name);
+    if(req.body.name) req.body.slug = slugifyProccess(req.body.name);
 
     try {
 
       // Validate unique group name per user
-      const groups = await Group.find({ 'user_id': req.user_id });
-      groups.map(x => {
-        if(x.slug === slugifyProccess(newGroup.name)){
+      const groupsFound = await Group.find({ 'user_id': req.user_id });
+      groupsFound.map(x => {
+        if(x.slug === slugifyProccess(req.body.name)){
           throw {ok: false , error: 'Ya existe un GRUPO creado con el mismo nombre.'};
         }
       });
-      
+
       await Group.findByIdAndUpdate(req.params.id,req.body,{
-        new: true
+        new: true,
+        fields: [
+          '-user_id'
+        ]
       }, (err, response) => {
 
         if(err) res.status(404).json({ok: false , error: err});

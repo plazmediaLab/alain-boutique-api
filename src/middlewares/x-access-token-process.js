@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/User';
 require('dotenv').config();
 
 /**
@@ -11,11 +12,23 @@ export const decodedToken = (req, res, next) => {
 
   const token = req.headers["x-access-token"];
 
-  if(!token) return res.status(403).json({error: 403, message: "Access TOKEN not received."});
+  if(!token) return res.status(403).json({ ok: false, status: 403, message: "Access TOKEN not received." });
 
-  const tokendata = jwt.decode(token);
-  req.user_id = tokendata.id
+  jwt.verify(token, process.env.SECRET_WORD, async (err, decoded) => {      
+    
+    if (err) {
+      return res.status(401).json({ ok: false, status: 401, mensaje: 'Token signature inválida.' });    
+    }
+    
+    const tokendata = decoded;
 
-  next();
+    req.user_id = tokendata.id
+
+    const user = await User.findById(req.user_id);
+    if(!user) return res.status(401).json({ ok: false, status: 404, mensaje: 'Info no foundInformation not found and invalid access.' });
+
+    next();
+
+  });
 
 };
