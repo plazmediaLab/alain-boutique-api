@@ -9,12 +9,14 @@ const ProductSchema = mongoose.Schema(
     value: {
       type: Number,
       required: [true, 'El NOMBRE del producto es requerido.'],
-      min: [0, 'El VALOR no puede ser menor a cero.']
+      min: [0, 'El VALOR no puede ser menor a cero.'],
+      default: 0
     },
     price: {
       type: Number,
       required: [true, 'El NOMBRE del producto es requerido.'],
-      min: [0, 'El PRECIO no puede ser menor a cero.']
+      min: [0, 'El PRECIO no puede ser menor a cero.'],
+      default: 0
     },
     user_id: [{
       ref: 'User',

@@ -1,7 +1,7 @@
 ### Dependencias instaladas en el proyecto
 
 ~~~
-  $ npm i express bcryptjs cors dotenv jsonwebtoken mongoose morgan helmet body-parser object-hash mongoose-unique-validation slugify --save
+  $ npm i express bcryptjs cors dotenv jsonwebtoken mongoose morgan helmet body-parser object-hash mongoose-unique-validation slugify sanitize --save
 ~~~
 
 ### Dependencias de desarrollo instaladas en el proyecto

@@ -28,6 +28,7 @@
     "mongoose-unique-validation": "^0.1.0",
     "morgan": "^1.10.0",
     "object-hash": "^2.0.3",
+    "sanitize": "^2.1.0",
     "slugify": "^1.4.5"
   },
   "devDependencies": {

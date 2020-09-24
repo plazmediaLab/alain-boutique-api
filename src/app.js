@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import pkg from '../package.json';
+import sanitize from 'sanitize';
 import { RoleSeeder } from './libs/InitialSetups';
 import { decodedToken } from './middlewares';
 
@@ -38,6 +39,7 @@ app.use(bodyParser.urlencoded({ extended: false })); //-> parse application/x-ww
 app.use(bodyParser.json()); // -> parse application/json
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(sanitize.middleware);
 
 /**
  * 
