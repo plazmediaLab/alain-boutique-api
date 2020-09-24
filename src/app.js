@@ -18,8 +18,9 @@ app.set('pkg', pkg);
  * Routers import
  * 
  */
-import UserRouters from './routes/UserRouters';
-import GroupRouters from './routes/GroupRouters';
+import UserRoutes from './routes/UserRoutes';
+import GroupRoutes from './routes/GroupRoutes';
+import ProductRoutes from './routes/ProductRoutes';
 
 /**
  * 
@@ -58,8 +59,9 @@ app.get('/', (req, res) => {
  * Set routes
  * 
  */
-app.use('/api/user', UserRouters);
-app.use('/api/group', decodedToken, GroupRouters);
+app.use('/api/user', UserRoutes);
+app.use('/api/group', decodedToken, GroupRoutes);
+app.use('/api/product', decodedToken, ProductRoutes);
 
 /** ================================
  * Set routes
