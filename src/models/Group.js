@@ -18,7 +18,10 @@ const GroupSchema = mongoose.Schema(
     user_id: [{
       ref: "User",
       type: Schema.Types.ObjectId
-    }]
+    }],
+    parnerth: {
+      type: [String]
+    }
   },
   {
     timestamps: true,
@@ -29,6 +32,15 @@ const GroupSchema = mongoose.Schema(
 // Middlewares
 GroupSchema.plugin(uniqueValidator);
 
+// Hidde fields
+GroupSchema.methods.toJSON = function() {
+  let user = this;
+  let userObject = user.toObject();
+
+  delete userObject.user_id;
+
+  return userObject;
+};
 // Middlewares methods
 /**
  * validate

@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validation'
 import bcrypt from 'bcryptjs';
 import hash from 'object-hash';
@@ -8,7 +8,7 @@ const validateEmail = function(email) {
   return re.test(email)
 };
 
-const UserSchema = mongoose.Schema(
+const ParnerthSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -22,30 +22,18 @@ const UserSchema = mongoose.Schema(
       validate: [validateEmail, 'Introdusca un CORREO electrónico valido.'],
       trim: true
     },
-    password: {
-      type: String,
-      required: [true, 'La CONTRASEÑA es requerida.'],
-    },
-    img: {
-      type: String,
-      default: null
-    },
     status: {
       type: Boolean,
       default: true
     },
-    role: {
-      type: String,
-      required: [true, "El ROLE es requerido."],
-      default: 'USER_ROLE',
-      enum: ['USER_ROLE', 'PARNERTH_ROLE']
-    },
-    parnerth: {
-      type: [String]
-    },
+    role: [{
+      ref: "Role",
+      type: Schema.Types.ObjectId,
+      required: [true, "El ROLE es requerido."]
+    }],
     parnerth_key: {
-      type: String
-    }
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -73,12 +61,11 @@ UserSchema.methods.toJSON = function() {
 
   delete userObject.password;
   delete userObject.status;
-  delete userObject._id;
 
   return userObject;
 };
 
 // Middlewares
-UserSchema.plugin(uniqueValidator);
+ParnerthSchema.plugin(uniqueValidator);
 
-export default mongoose.model('User', UserSchema);
+export default mongoose.model('Parnerth', ParnerthSchema);

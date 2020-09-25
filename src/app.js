@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import pkg from '../package.json';
 import sanitize from 'sanitize';
 import { RoleSeeder } from './libs/InitialSetups';
-import { decodedToken } from './middlewares';
+import { decodedToken, userAccess } from './middlewares';
 
 /**
  * 
@@ -62,8 +62,8 @@ app.get('/', (req, res) => {
  * 
  */
 app.use('/api/user', UserRoutes);
-app.use('/api/group', decodedToken, GroupRoutes);
-app.use('/api/product', decodedToken, ProductRoutes);
+app.use('/api/group', decodedToken, userAccess, GroupRoutes);
+app.use('/api/product', decodedToken, userAccess, ProductRoutes);
 
 /** ================================
  * Set routes
