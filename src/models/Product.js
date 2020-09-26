@@ -45,4 +45,24 @@ const ProductSchema = mongoose.Schema(
   }
 );
 
+// state === 'SOLD' ? Date(Date.now()) : null
+ProductSchema.pre('validate', function(next){
+  if(this.state === 'SOLD'){
+    this.sold_date = Date.now();
+  }else if(this.state === 'STOCK' || this.state === 'ACTIVE'){
+    this.sold_date = null;
+  }
+  next();
+});
+
+// Hidde Password
+ProductSchema.methods.toJSON = function() {
+  let user = this;
+  let userObject = user.toObject();
+
+  delete userObject.user_id;
+
+  return userObject;
+};
+
 export default mongoose.model('Product', ProductSchema);

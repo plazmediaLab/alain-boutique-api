@@ -14,6 +14,7 @@ const GroupSchema = mongoose.Schema(
     },
     color: {
       type: String,
+      default: null
     },
     user_id: [{
       ref: "User",

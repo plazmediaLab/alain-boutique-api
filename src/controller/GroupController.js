@@ -18,7 +18,7 @@ class GroupController {
       const groups = await Group.find({ 'user_id': req.user_id });
       groups.map(x => {
         if(x.slug === slugifyProccess(newGroup.name)){
-          throw {ok: false , message: 'Ya existe un GRUPO creado con el mismo nombre.'};
+          throw {ok: false, error: 400, message: 'Ya existe un GRUPO creado con el mismo nombre.'};
         }
       });
 
@@ -58,7 +58,7 @@ class GroupController {
 
       const group = await Group.findById(req.params.id);
 
-      if(!group) res.status(404).json({ok: false , message: 'No se encontro el elemento'}); 
+      if(!group) throw {ok: false , error: 404, message: 'No se encontro el elemento'}; 
 
       // Success response
       return res.status(200).json({ok: true, group});
@@ -79,18 +79,15 @@ class GroupController {
       const groupsFound = await Group.find({ 'user_id': req.user_id });
       groupsFound.map(x => {
         if(x.slug === slugifyProccess(req.body.name)){
-          throw {ok: false , error: 'Ya existe un GRUPO creado con el mismo nombre.'};
+          throw {ok: false , error: 400, message: 'Ya existe un GRUPO creado con el mismo nombre.'};
         }
       });
 
       await Group.findByIdAndUpdate(req.params.id,req.body,{
-        new: true,
-        fields: [
-          '-user_id'
-        ]
+        new: true
       }, (err, response) => {
 
-        if(err) res.status(404).json({ok: false , error: err});
+        if(err) res.status(404).json({ok: false , error: 404, error: err});
 
         // Success response
         return res.status(200).json({ok: true, group: response});
@@ -109,7 +106,7 @@ class GroupController {
 
       const doc = await Group.findByIdAndDelete(req.params.id);
       
-      if(!doc) throw {ok: false , message: 'El elemento no existe o ya fue eliminado previamente.'};
+      if(!doc) throw {ok: false , error: 404, message: 'El elemento no existe o ya fue eliminado previamente.'};
   
       return res.status(200).json({ok: true, message: 'El elemento fue eliminado con éxito.'});
 

@@ -22,6 +22,7 @@ app.set('pkg', pkg);
 import UserRoutes from './routes/UserRoutes';
 import GroupRoutes from './routes/GroupRoutes';
 import ProductRoutes from './routes/ProductRoutes';
+import ParnerthRoutes from './routes/ParnerthRoutes';
 
 /**
  * 
@@ -64,6 +65,7 @@ app.get('/', (req, res) => {
 app.use('/api/user', UserRoutes);
 app.use('/api/group', decodedToken, userAccess, GroupRoutes);
 app.use('/api/product', decodedToken, userAccess, ProductRoutes);
+app.use('/api/parnerth', decodedToken, ParnerthRoutes);
 
 /** ================================
  * Set routes

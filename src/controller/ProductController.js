@@ -3,7 +3,7 @@ import Product from '../models/Product';
 class ProductController {
   async store(req, res) {
 
-    const { name, value, price, description, state } = req.body;
+    const { name, value, price, description, state, group } = req.body;
 
     if(price > value) res.status(400).json({ ok: false, error: 400, message: 'El VALOR no puede ser menor al PRECIO.' });
 
@@ -15,9 +15,8 @@ class ProductController {
         price,
         description,
         state,
-        sold_date: null,
         user_id: [req.user_id],
-        group: ['5f6be308d7037e3f20bb7e3b']
+        group
       });
 
       const saveProduct = await newProduct.save();
@@ -35,13 +34,11 @@ class ProductController {
     
     try {
       
-      const products = await Product.find({ 'user_id': req.user_id }, [
-        '-user_id',
-        ], {
+      const products = await Product.find({ 'user_id': req.user_id }, null ,{
         sort: {
           createdAt: -1
         }
-      }).populate('group');
+      });
 
       // Success response
       return res.status(200).json({ok: true, products});
@@ -58,13 +55,9 @@ class ProductController {
 
     try {
       
-      const product = await Product.find({ '_id': id }, [
-        '-user_id',
-        ]
-      ).populate('group');
+      const product = await Product.find({ '_id': id });
 
-      console.log(product);
-      if(product.length === 0) res.status(404).json({ ok: false, error: 404, message: 'No se encontro el elemento.' });
+      if(product.length === 0) throw { ok: false, error: 404, message: 'No se encontro el elemento.' };
 
       // Success response
       return res.status(200).json({ok: true, product});
@@ -88,19 +81,19 @@ class ProductController {
         req.body.sold_date = null;
       };
 
+      const productFound = await Product.findById(id);
+      if(!productFound) throw { ok: false, error: 404, message: 'El elemento no existe o ya fue eliminado previamente.' };
+
       await Product.findByIdAndUpdate(id, req.body, {
-        new: true,
-        fields: [
-          '-user_id',
-        ]
+        new: true
       }, (err, response) => {
 
-        if(err) res.status(404).json({ok: false , error: err});
+        if(err) res.status(404).json({ok: false , error: 404, message: err});
 
         // Success response
         return res.status(200).json({ok: true, group: response});
 
-      }).populate('group');
+      });
 
     } catch (error) {
       return res.status(404).json(error);
@@ -113,7 +106,7 @@ class ProductController {
       
       const doc = await Product.findByIdAndDelete(req.params.id);
       
-      if(!doc) throw {ok: false , message: 'El elemento no existe o ya fue eliminado previamente.'};
+      if(!doc) throw {ok: false ,error: 404 , message: 'El elemento no existe o ya fue eliminado previamente.'};
   
       return res.status(200).json({ok: true, message: 'El elemento fue eliminado con éxito.'});
       
