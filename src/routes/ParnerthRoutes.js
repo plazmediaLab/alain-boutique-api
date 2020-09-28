@@ -8,9 +8,8 @@ const routes = new Router();
 
 // Add routes
 routes.get('/', ParnerthController.index);
-routes.get('/:key', ParnerthController.show);
+routes.get('/:group_id', ParnerthController.show);
 routes.post('/', [userAccess], ParnerthController.store);
-routes.put('/:key', [userAccess], ParnerthController.update);
-routes.delete('/:key', [userAccess], ParnerthController.destroy);
+routes.delete('/:group_id/:key', [userAccess], ParnerthController.destroy);
 
 module.exports = routes;

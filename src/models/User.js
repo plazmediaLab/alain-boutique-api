@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validation'
 import bcrypt from 'bcryptjs';
-import hash from 'object-hash';
+import shortid from  'shortid';
 
 const validateEmail = function(email) {
   var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -40,9 +40,10 @@ const UserSchema = mongoose.Schema(
       default: 'USER_ROLE',
       enum: ['USER_ROLE', 'PARNERTH_ROLE']
     },
-    parnerth: {
-      type: [String]
-    },
+    parnerth: [{
+      ref: 'User',
+      type: Schema.Types.ObjectId
+    }],
     parnerth_key: {
       type: String
     }
@@ -62,7 +63,7 @@ UserSchema.statics.comparePassword = async (password, recivePassword) => {
   return await bcrypt.compare(password, recivePassword);
 };
 UserSchema.statics.HashParnerthKey = (data) => {
-  let key = hash(data) 
+  let key = shortid.generate(); 
   return key;
 };
 

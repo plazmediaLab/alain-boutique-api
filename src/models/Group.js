@@ -20,9 +20,10 @@ const GroupSchema = mongoose.Schema(
       ref: "User",
       type: Schema.Types.ObjectId
     }],
-    parnerth: {
-      type: [String]
-    }
+    parnerth: [{
+      ref: 'User',
+      type: Schema.Types.ObjectId
+    }]
   },
   {
     timestamps: true,
@@ -38,7 +39,7 @@ GroupSchema.methods.toJSON = function() {
   let user = this;
   let userObject = user.toObject();
 
-  delete userObject.user_id;
+  // delete userObject.user_id;
 
   return userObject;
 };

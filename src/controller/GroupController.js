@@ -1,4 +1,5 @@
 import Group from '../models/Group';
+import Product from '../models/Product';
 import slugifyProccess from '../helpers/slugifyProccess';
 
 class GroupController {
@@ -56,12 +57,25 @@ class GroupController {
 
     try {
 
-      const group = await Group.findById(req.params.id);
+      const group = await Group.findById(req.params.id, ['-user_id']).populate({
+        path: 'parnerth',
+        select: 'name img parnerth_key -_id'
+      });
 
       if(!group) throw {ok: false , error: 404, message: 'No se encontro el elemento'}; 
 
+      const products = await Product.find({ group: req.params.id }, [
+        '-group',
+        '-updatedAt'
+      ])
+
+      const response = {
+        group,
+        products
+      }
+
       // Success response
-      return res.status(200).json({ok: true, group});
+      return res.status(200).json({ok: true, response});
       
     } catch (error) {
       return res.status(404).json(error);

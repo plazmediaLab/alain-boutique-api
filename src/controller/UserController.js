@@ -25,9 +25,10 @@ class UserController {
         name,
         email,
         img,
+        role,
         password: await User.encryptPassword(password),
         parnerth: [],
-        parnerth_key: role === 'PARNERTH_ROLE' ? User.HashParnerthKey({email, date: Date.now()}) : null,
+        parnerth_key: role === 'PARNERTH_ROLE' ? User.HashParnerthKey() : null,
       });
 
       // Save user
@@ -58,17 +59,20 @@ class UserController {
       
       // Find user
       const userFound = await User.findOne({email: req.body.email});
+
       // If the user does not exist
       if(!userFound) throw {ok: false, error: 400, message: 'Los datos para iniciar sesión son incorrectos.'};
 
       // Check that the password is valid
       const matchPass = await User.comparePassword(req.body.password, userFound.password);
       // If the password does not match
+      console.log(matchPass);
       if(!matchPass) throw {ok: false, error: 401, message: 'El correo o la contraseña son incorrectos.'};
+
 
       // Create token
       const token = jwt.sign({id: userFound._id}, process.env.SECRET_WORD, {
-        expiresIn: '24h'
+        expiresIn: '2h'
       });
 
       return res.json({ok: true, authorization: token, user: userFound});
