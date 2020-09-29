@@ -141,14 +141,12 @@ class ParnerthController {
   async destroy(req, res) {
 
     const key = req.params.key;
-
-    let keyIsAdd = {};
     
     try {
 
       // Obtener ID del parnerth
       const parnerthUser = await User.findOne({ parnerth_key: key }, ['_id']);
-      if(!parnerthUser) keyIsAdd = { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
+      if(!parnerthUser) throw { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
       
       // Obtener todos los grupos en los que se encuentre el Parnerth agregado y eliminarlo de la matriz { $pull }
       const GroupsFound = await Group.updateMany({ parnerth: {$all: [parnerthUser._id]} }, { $pull: {parnerth: parnerthUser._id}});
@@ -173,17 +171,15 @@ class ParnerthController {
 
     const group = req.params.group_id;
     const key = req.params.key;
-
-    let keyIsAdd = {};
     
     try {
 
       // Obtener ID del parnerth
       const parnerthUser = await User.findOne({ parnerth_key: key }, ['_id']);
-      if(!parnerthUser) keyIsAdd = { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
+      if(!parnerthUser) throw { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
       
       const groupFound = await Group.findById(group, ['parnerth', 'name']);
-      if(!groupFound) keyIsAdd = { ok: false, error: 404, message: 'No se encontro el elemento.' };
+      if(!groupFound) throw { ok: false, error: 404, message: 'No se encontro el elemento.' };
       
       // Eliminar el parnerth del ususario en turno de la matriz en el Grupo
       const userOnTurn = await Group.updateOne({ _id: group }, { $pull: {parnerth: parnerthUser._id} });

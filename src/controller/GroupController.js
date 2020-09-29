@@ -7,6 +7,12 @@ class GroupController {
 
     const { name, color } = req.body;
 
+    let responseErr = {};
+
+    // Validar que el Grupo no exista ya dentro de los registros del usuario
+    const alreadyExist = await Group.find({ user_id: req.user_id, slug: slugifyProccess(name) });
+    if(alreadyExist.length > 0) responseErr = { ok: false, error: 409, message: 'Ya existe un grupo creado con el mismo nombre.' };
+
     try {
 
       const newGroup = new Group({
@@ -15,22 +21,19 @@ class GroupController {
         user_id: [req.user_id]
       });
   
-      // Validate unique group name per user
-      const groups = await Group.find({ 'user_id': req.user_id });
-      groups.map(x => {
-        if(x.slug === slugifyProccess(newGroup.name)){
-          throw {ok: false, error: 400, message: 'Ya existe un GRUPO creado con el mismo nombre.'};
-        }
-      });
+      if(Object.keys(responseErr).length > 0){
+        return res.status(409).json(responseErr);
+      }else{
 
-      // Doc save
-      const groupSave = await newGroup.save();
-  
-      // Success response
-      return res.status(200).json({ok: true, group: groupSave});
+        // Doc save
+        const groupSave = await newGroup.save();
+
+        // Success response
+        return res.status(200).json({ok: true, group: groupSave});
+      }
       
     } catch (error) {
-      return res.status(400).json(error);
+      return res.status(400).json({ok: false, error});
     }
   };
 
@@ -38,11 +41,11 @@ class GroupController {
 
     try {
       
-      const groups = await Group.find({ 'user_id': req.user_id }, ['-user_id'], {
+      const groups = await Group.find({ user_id: req.user_id }, ['-user_id'], {
         sort: {
           createdAt: -1
         }
-      });
+      }).populate({ path: 'parnerth', select: 'name img parnerth_key -_id' });
 
       // Success response
       return res.status(200).json({ok: true, groups});
@@ -59,7 +62,8 @@ class GroupController {
 
       const group = await Group.findById(req.params.id, ['-user_id']).populate({
         path: 'parnerth',
-        select: 'name img parnerth_key -_id'
+        select: 'name img parnerth_key -_id',
+        sort: { name: -1 }
       });
 
       if(!group) throw {ok: false , error: 404, message: 'No se encontro el elemento'}; 
@@ -89,19 +93,15 @@ class GroupController {
 
     try {
 
-      // Validate unique group name per user
-      const groupsFound = await Group.find({ 'user_id': req.user_id });
-      groupsFound.map(x => {
-        if(x.slug === slugifyProccess(req.body.name)){
-          throw {ok: false , error: 400, message: 'Ya existe un GRUPO creado con el mismo nombre.'};
-        }
-      });
+      // Validar que el Grupo no exista ya dentro de los registros del usuario
+      const alreadyExist = await Group.find({ user_id: req.user_id, slug: req.body.slug });
+      if(alreadyExist.length > 0) throw { ok: false, error: 409, message: 'Ya existe un grupo creado con el mismo nombre.' };
 
       await Group.findByIdAndUpdate(req.params.id,req.body,{
-        new: true
+        new: true, select: '-user_id'
       }, (err, response) => {
 
-        if(err) res.status(404).json({ok: false , error: 404, error: err});
+        if(err) throw {ok: false , error: 404, error: err};
 
         // Success response
         return res.status(200).json({ok: true, group: response});
@@ -121,8 +121,14 @@ class GroupController {
       const doc = await Group.findByIdAndDelete(req.params.id);
       
       if(!doc) throw {ok: false , error: 404, message: 'El elemento no existe o ya fue eliminado previamente.'};
+
+      const productDeleted = await Product.deleteMany({ group: req.params.id });
+
+      const response = {
+        destroy: productDeleted
+      }
   
-      return res.status(200).json({ok: true, message: 'El elemento fue eliminado con éxito.'});
+      return res.status(200).json({ok: true, message: 'El Grupo y sus Productos fuerón eliminado con éxito.', response});
 
     } catch (error) {
       return res.status(404).json(error); 
