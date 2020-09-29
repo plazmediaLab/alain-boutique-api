@@ -23,6 +23,7 @@ import UserRoutes from './routes/UserRoutes';
 import GroupRoutes from './routes/GroupRoutes';
 import ProductRoutes from './routes/ProductRoutes';
 import ParnerthRoutes from './routes/ParnerthRoutes';
+import SummaryRoutes from './routes/SummaryRoutes';
 
 /**
  * 
@@ -66,6 +67,7 @@ app.use('/api/user', UserRoutes);
 app.use('/api/group', decodedToken, userAccess, GroupRoutes);
 app.use('/api/product', decodedToken, userAccess, ProductRoutes);
 app.use('/api/parnerth', decodedToken, ParnerthRoutes);
+app.use('/api/summary', decodedToken, userAccess, SummaryRoutes);
 
 /** ================================
  * Set routes

@@ -21,18 +21,20 @@ class ParnerthController {
     let keyIsAdd = {};
     
     try {
+
+      // TODO · Validar que el parnerth no este ya agregado 09/29/2020 
       
       // Obtener ID del parnerth
       const parnerthUser = await User.findOne({ parnerth_key: key }, ['_id']);
       if(!parnerthUser) keyIsAdd= { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
       
       // Obtener el Grupo al que se le agregara el parnerth
-      const groupFound = await Group.findOneAndUpdate({ _id: group }, { parnerth: [parnerthUser._id] }, { new: true, select: 'name parnerth' })
+      const groupFound = await Group.findOneAndUpdate({ _id: group }, { $push : {parnerth: parnerthUser._id} }, { new: true, select: 'name parnerth' })
         .populate({ path: 'parnerth', select: 'name img -_id' });
       if(!groupFound) keyIsAdd= { ok: false, error: 404, message: 'El GRUPO no devuelve resultados.' };
 
       // Actualizar Usuario con el nuevo Parnerth
-      const userOnTurn = await User.findOneAndUpdate({ _id: req.user_id }, { parnerth: [parnerthUser._id] }, { new: true, select: 'name parnerth' })
+      const userOnTurn = await User.findOneAndUpdate({ _id: req.user_id }, { $push: {parnerth: parnerthUser._id} }, { new: true, select: 'name parnerth' })
         .populate({ path: 'parnerth', select: 'name img -_id' });
 
       const dataUpdate = {
