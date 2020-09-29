@@ -100,8 +100,9 @@ class ParnerthController {
       // Si es NUll es Usuario
       // Si es EXISTE es Parnerth
       if(userOnTurn.parnerth_key === null){
-        console.log('Usre');
-        const groupFound = await Group.findById( param );
+
+        const groupFound = await Group.findById( param , ['name', 'color', 'parnerth', 'createdAt'])
+        .populate({ path: 'parnerth', select: 'name img -_id' });
         if(!groupFound) throw { ok: false, error: 401, message: 'No se encontro el elemento.' };
         
         group = groupFound;
