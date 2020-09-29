@@ -11,8 +11,8 @@ class ParnerthController {
   // ✓ DONE · Mostrar grupos con Parnerth 09/27/2020 
   // ✓ DONE · Mostrar un grupo con Parnerth 09/27/2020 
 
-  // TODO · Eliminar un Parnerth globalmente 09/27/2020 
-  // TODO · Eliminar un Parnerth de un Grupo 09/27/2020 
+  // ✓ DONE · Eliminar un Parnerth globalmente 09/27/2020 
+  // ✓ DONE · Eliminar un Parnerth de un Grupo 09/27/2020 
 
   async store(req, res) {
 
@@ -48,7 +48,7 @@ class ParnerthController {
 
     } catch (error) {
       return res.status(400).json(error);
-    }
+    };
 
   };
 
@@ -79,9 +79,9 @@ class ParnerthController {
       return res.json({ok: true, groups});
 
     } catch (error) {
-      return res.status(400).json(error)
-    }
-  }
+      return res.status(400).json(error);
+    };
+  };
 
   async show(req, res) {
 
@@ -102,7 +102,7 @@ class ParnerthController {
       if(userOnTurn.parnerth_key === null){
 
         const groupFound = await Group.findById( param , ['name', 'color', 'parnerth', 'createdAt'])
-        .populate({ path: 'parnerth', select: 'name img -_id' });
+          .populate({ path: 'parnerth', select: 'name img -_id' });
         if(!groupFound) throw { ok: false, error: 401, message: 'No se encontro el elemento.' };
         
         group = groupFound;
@@ -134,51 +134,72 @@ class ParnerthController {
       return res.json({ok: true, response});
 
     } catch (error) {
-      return res.status(400).json(error)
-    }
-  }
+      return res.status(400).json(error);
+    };
+  };
 
   async destroy(req, res) {
 
-    const param = req.params.group_id;
     const key = req.params.key;
 
-    if(param.length !== 24) res.status(400).json({ ok: false, error: 400, message: 'El valor enviado como parámetro de búsqueda no es válido.' });
-
+    let keyIsAdd = {};
+    
     try {
 
-      const id = await User.findOne({parnerth_key: key},['_id']);
+      // Obtener ID del parnerth
+      const parnerthUser = await User.findOne({ parnerth_key: key }, ['_id']);
+      if(!parnerthUser) keyIsAdd = { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
+      
+      // Obtener todos los grupos en los que se encuentre el Parnerth agregado y eliminarlo de la matriz { $pull }
+      const GroupsFound = await Group.updateMany({ parnerth: {$all: [parnerthUser._id]} }, { $pull: {parnerth: parnerthUser._id}});
 
-      if(!id) throw { ok: false, error: 404, message: 'No se encontro el elemento.' };
+      // Eliminar el parnerth del ususario en turno
+      const userOnTurn = await User.updateOne({ _id: req.user_id }, { $pull: {parnerth: parnerthUser._id} });
 
-      let idToSearch = id._id;
-
-      /**
-       * 
-       *  Eliminar de Grupo
-       * 
-       */ 
-      const parnerths = await Group.findOne({ _id: param }, ['parnerth']);
-      const { parnerth, _id } = parnerths;
-
-      if(!parnerth.includes(idToSearch)) throw { ok: false, error: 404, message: 'El KEY no es valido en este grupo.' };;
-
-      // Eliminar ID del parnerth del Array del Grupo 
-      for(var i = parnerth.length - 1; i >= 0; i--) {
-        if(toString(parnerth[i]) === toString(idToSearch)){
-          parnerth.splice(i, 1);
-        }
+      const response = {
+        GroupsFound,
+        userOnTurn
       };
 
-      // Actualizar propiedad parnerth
-      await Group.updateOne({ _id }, { parnerth });
-
-      return res.json({ ok: true, message: 'El elemento fue removido de tu lista con éxito.' });
+      return res.json({ ok: true, message: 'El elemento fue removido de tu lista con éxito.', response });
 
     } catch (error) {
-      return res.status(400).json(error)
-    }
-  }
-}
+      return res.status(400).json(error);
+    };
+
+  };
+
+  async destroyOfGroup(req, res) {
+
+    const group = req.params.group_id;
+    const key = req.params.key;
+
+    let keyIsAdd = {};
+    
+    try {
+
+      // Obtener ID del parnerth
+      const parnerthUser = await User.findOne({ parnerth_key: key }, ['_id']);
+      if(!parnerthUser) keyIsAdd = { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
+      
+      const groupFound = await Group.findById(group, ['parnerth', 'name']);
+      if(!groupFound) keyIsAdd = { ok: false, error: 404, message: 'No se encontro el elemento.' };
+      
+      // Eliminar el parnerth del ususario en turno de la matriz en el Grupo
+      const userOnTurn = await Group.updateOne({ _id: group }, { $pull: {parnerth: parnerthUser._id} });
+
+      const response = {
+        userModify: userOnTurn,
+        group: groupFound
+      };
+
+      return res.json({ ok: true, message: 'El elemento fue removido del grupo con éxito.', response });
+
+    } catch (error) {
+      return res.status(400).json(error);
+    };
+
+  };
+};
 
 export default new ParnerthController();
