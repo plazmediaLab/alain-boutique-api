@@ -5,7 +5,9 @@ class ProductController {
 
     const { name, value, price, description, state, group } = req.body;
 
-    if(price > value) res.status(400).json({ ok: false, error: 400, message: 'El VALOR no puede ser menor al PRECIO.' });
+    let responseErr = {};
+
+    if(price > value) responseErr = { ok: false, error: 400, message: 'El VALOR no puede ser menor al PRECIO.' };
 
     try {
 
@@ -19,16 +21,23 @@ class ProductController {
         group
       });
 
-      const saveProduct = await newProduct.save();
+      if(Object.keys(responseErr).length > 0){
+        return res.status(409).json(responseErr);
+      }else{
 
-      // Success response
-      return res.status(200).json({ok: true, group: saveProduct});
+        // Doc save
+        const saveProduct = await newProduct.save();
+
+        // Success response
+        return res.status(200).json({ok: true, product: saveProduct});
+
+      };
       
     } catch (error) {
       return res.status(400).json(error);
-    }
+    };
     
-  }
+  };
 
   async index(req, res) {
     
@@ -38,6 +47,9 @@ class ProductController {
         sort: {
           createdAt: -1
         }
+      }).populate({
+        path: 'group',
+        select: 'name color'
       });
 
       // Success response
@@ -45,9 +57,9 @@ class ProductController {
 
     } catch (error) {
       return res.status(404).json(error);
-    }
+    };
 
-  }
+  };
 
   async show(req, res) {
 
@@ -55,9 +67,12 @@ class ProductController {
 
     try {
       
-      const product = await Product.find({ '_id': id });
+      const product = await Product.findOne({ '_id': id }).populate({
+        path: 'group',
+        select: 'name color'
+      });
 
-      if(product.length === 0) throw { ok: false, error: 404, message: 'No se encontro el elemento.' };
+      if(!product) throw { ok: false, error: 404, message: 'No se encontro el elemento.' };
 
       // Success response
       return res.status(200).json({ok: true, product});
@@ -74,6 +89,7 @@ class ProductController {
     const { state } = req.body;
 
     try {
+
 
       if(state === 'SOLD'){
         req.body.sold_date = Date(Date.now());
@@ -93,6 +109,9 @@ class ProductController {
         // Success response
         return res.status(200).json({ok: true, group: response});
 
+      }).populate({
+        path: 'group',
+        select: 'name color'
       });
 
     } catch (error) {
