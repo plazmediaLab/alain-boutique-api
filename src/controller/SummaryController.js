@@ -19,7 +19,7 @@ class SummaryController {
       let groups;
       let products;
       let shared_groups;
-      let parnerthsCount = 0;
+      let parnerths_count = 0;
       let total_on_base_price = 0;
       let total_on_base_value = 0;
       let total_sold_on_products_price = 0;
@@ -45,7 +45,7 @@ class SummaryController {
         shared_groups = await Group.countDocuments({ parnerth: {$exists: true, $not: {$size: 0}} });
 
         const parnerthsFound = await User.findById({ _id: req.user_id }).select('parnerth -_id');
-        parnerthsCount = parnerthsFound.parnerth.length;
+        parnerths_count = parnerthsFound.parnerth.length;
 
         const productsFound = await Product.find({ user_id: req.user_id }).select('price value');
         productsFound.map(item => {
@@ -62,7 +62,7 @@ class SummaryController {
       }
 
       const summary = {
-        parnerthsCount,
+        parnerths_count,
         groups: {
           total: groups,
           shared_groups,

@@ -6,7 +6,8 @@ import shortid from  'shortid';
 class ParnerthController {
 
 
-  // ✓ DONE · Agregar un Parnerth global [Usuario + Grupo] & [Grupo] 09/27/2020 
+  // ✓ DONE · Agregar un Parnerth a Usuario 09/27/2020 
+  // ✓ DONE · Agregar un Parnerth a Grupo 09/27/2020 
 
   // ✓ DONE · Mostrar grupos con Parnerth 09/27/2020 
   // ✓ DONE · Mostrar un grupo con Parnerth 09/27/2020 
@@ -14,38 +15,81 @@ class ParnerthController {
   // ✓ DONE · Eliminar un Parnerth globalmente 09/27/2020 
   // ✓ DONE · Eliminar un Parnerth de un Grupo 09/27/2020 
 
-  async store(req, res) {
+  async storeUser(req, res, next) {
 
-    const { key, group } = req.body;
+    const key = req.params.key;
     
-    let keyIsAdd = {};
+    let errList = {};
     
     try {
-
-      // TODO · Validar que el parnerth no este ya agregado 09/29/2020 
       
       // Obtener ID del parnerth
-      const parnerthUser = await User.findOne({ parnerth_key: key }, ['_id']);
-      if(!parnerthUser) keyIsAdd= { ok: false, error: 404, message: 'El KEY no devuelve resultados.' };
+      const parnerthUser = await User.findOne({ parnerth_key: key }, ['_id']); 
+      if(!parnerthUser) errList.error_key = { ok: false, error: 404, message: `El KEY: { ${key} } no devuelve resultados.` };
       
-      // Obtener el Grupo al que se le agregara el parnerth
-      const groupFound = await Group.findOneAndUpdate({ _id: group }, { $push : {parnerth: parnerthUser._id} }, { new: true, select: 'name parnerth' })
-        .populate({ path: 'parnerth', select: 'name img -_id' });
-      if(!groupFound) keyIsAdd= { ok: false, error: 404, message: 'El GRUPO no devuelve resultados.' };
+      // Verificar que el Parnerth no exista ya en la lista del usuario 
+      const alreadyExist = await User.findOne({ _id: req.user_id, parnerth: {$all: parnerthUser._id} })
+        .populate({ path: 'parnerth', select: 'name parnerth_key -_id' })
+        .select('parnerth');
+      if(alreadyExist) errList.error_already_exists = { ok: false, error: 409, message: `El KEY: { ${key} } Ya esta agregado a tu lista.`, parnerth: alreadyExist };
 
-      // Actualizar Usuario con el nuevo Parnerth
-      const userOnTurn = await User.findOneAndUpdate({ _id: req.user_id }, { $push: {parnerth: parnerthUser._id} }, { new: true, select: 'name parnerth' })
-        .populate({ path: 'parnerth', select: 'name img -_id' });
+      let userOnTurn;
 
-      const dataUpdate = {
-        group: groupFound,
-        user: userOnTurn
+      if(Object.keys(errList).length === 0){
+        // Actualizar Usuario con el nuevo Parnerth
+        userOnTurn = await User.findOneAndUpdate({ _id: req.user_id }, { $push: {parnerth: parnerthUser._id} }, { new: true, select: 'name parnerth' })
+          .populate({ path: 'parnerth', select: 'name img -_id' });
+      };
+
+      if(Object.keys(errList).length > 0){
+        return res.status(400).json(errList);
+      }else{
+        return res.json({ ok: true, message: "Se elemento fue agregado correctamente.", parnerth_add: userOnTurn });
       }
 
-      if(Object.keys(keyIsAdd).length > 0){
-        return res.status(400).json(keyIsAdd);
+    } catch (error) {
+      return res.status(400).json(error);
+    };
+
+  };
+
+  async storeGroup(req, res) {
+
+    const group = req.params.group_id;
+    const key = req.params.key;
+    
+    let errList = {};
+    
+    try {
+      
+      // Obtener ID del parnerth
+      const parnerthUser = await User.findOne({ parnerth_key: key }, ['name', 'parnerth_key']);
+      if(!parnerthUser) errList.error_key = { ok: false, error: 404, message: `El KEY: { ${key} } no devuelve resultados.` };
+      
+      // verificar que el grupo existe
+      const groupFound = await Group.findById(group, ['_id', 'name']);
+      if(!groupFound) errList.error_group = { ok: false, error: 404, message: 'El Grupo no devuelve resultados.' };
+
+      // Verificar que el Parnerth no exista ya en la lista del grupo.
+      const alreadyExist = await Group.findOne({ user_id: req.user_id, parnerth: {$all: parnerthUser._id} })
+        .populate({ path: 'parnerth', select: 'name parnerth_key -_id' })
+        .select('parnerth');
+      if(alreadyExist) errList.error_already_exists = { ok: false, error: 409, message: `El KEY: { ${key} } ya esta agregado al grupo.`, parnerths: alreadyExist.parnerth };
+
+      if(Object.keys(errList).length === 0){
+        // Actualizar Grupo agregando al Parnerth
+        await Group.findOneAndUpdate({ _id: group }, { $push : {parnerth: parnerthUser._id} });
+      };
+
+      const response = {
+        group_update: groupFound,
+        parnerth_add: parnerthUser,
+      };
+
+      if(Object.keys(errList).length > 0){
+        return res.status(400).json(errList);
       }else{
-        return res.json({ok: true, message: "Se elemento fue agregado correctamente.", dataUpdate});
+        return res.json({ok: true, message: "Se elemento fue agregado correctamente.", response});
       }
 
     } catch (error) {

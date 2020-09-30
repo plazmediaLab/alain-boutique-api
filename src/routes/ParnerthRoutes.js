@@ -9,7 +9,8 @@ const routes = new Router();
 // Add routes
 routes.get('/', ParnerthController.index);
 routes.get('/:group_id', ParnerthController.show);
-routes.post('/', [userAccess], ParnerthController.store);
+routes.post('/:key', [userAccess], ParnerthController.storeUser);
+routes.post('/:group_id/:key', [userAccess], ParnerthController.storeGroup);
 routes.delete('/:key', [userAccess], ParnerthController.destroy);
 routes.delete('/:group_id/:key', [userAccess], ParnerthController.destroyOfGroup);
 
