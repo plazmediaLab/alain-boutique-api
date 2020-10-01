@@ -7,8 +7,10 @@ mongoose.Promise = global.Promise;
  * 
  * MongoDB connection for development
  * @parameters // process.env.DB_NAME with the name of your DB in the .env file
+ * 
+ * `mongodb://localhost:27017/${process.env.DB_NAME}`
  */
-mongoose.connect(`mongodb://localhost:27017/${process.env.DB_NAME}`, {
+mongoose.connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,

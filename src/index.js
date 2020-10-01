@@ -23,4 +23,4 @@ import './db';
  */
 app.listen(process.env.PORT || process.env.SERVER_PORT);
 
-console.log('Serve listen on port', Number(process.env.SERVER_PORT));
+console.log('Serve listen on port', Number(process.env.PORT || process.env.SERVER_PORT));
