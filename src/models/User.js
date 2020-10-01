@@ -62,7 +62,7 @@ UserSchema.statics.encryptPassword = async (password) => {
 UserSchema.statics.comparePassword = async (password, recivePassword) => {
   return await bcrypt.compare(password, recivePassword);
 };
-UserSchema.statics.HashParnerthKey = (data) => {
+UserSchema.statics.HashParnerthKey = () => {
   let key = shortid.generate(); 
   return key;
 };
