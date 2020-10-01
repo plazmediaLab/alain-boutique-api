@@ -8,7 +8,7 @@
     "build": "babel src --out-dir build",
     "start": "node build/index.js",
     "serve": "babel-node ./build/index.js",
-    "dev": "nodemon src --exec babel-node"
+    "dev": "nodemon src/index.js --exec babel-node"
   },
   "keywords": [
     "node",

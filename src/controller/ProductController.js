@@ -7,7 +7,7 @@ class ProductController {
 
     let responseErr = {};
 
-    if(price > value) responseErr = { ok: false, error: 400, message: 'El VALOR no puede ser menor al PRECIO.' };
+    if(Number(price) > Number(value)) responseErr = { ok: false, error: 400, message: 'El VALOR no puede ser menor al PRECIO.' };
 
     try {
 
@@ -30,7 +30,7 @@ class ProductController {
 
         // Success response
         return res.status(200).json({ok: true, product: saveProduct});
-
+        
       };
       
     } catch (error) {
