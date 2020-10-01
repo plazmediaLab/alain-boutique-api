@@ -1,4 +1,6 @@
-require('dotenv').config();
+if(process.env.NODE_ENV !== 'production'){
+  require('dotenv').config();
+}
 
 /**
  * 
@@ -19,6 +21,6 @@ import './db';
  * Server started
  * 
  */
-app.listen(process.env.PORT || process.env.SERVER_PROT);
+app.listen(process.env.PORT || process.env.SERVER_PORT);
 
-console.log('Serve listen on port', Number(process.env.SERVER_PROT));
+console.log('Serve listen on port', Number(process.env.SERVER_PORT));

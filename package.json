@@ -4,9 +4,10 @@
   "description": "Control de ventas Alain Boutique / API",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node src",
-    "build": "babel src --out-dir build",
-    "dev": "nodemon src --exec babel-node"
+    "postinstall": "npm run build",
+    "build": "cross-env NODE_ENV=production babel src --out-dir build",
+    "start": "cross-env NODE_ENV=production node build",
+    "dev": "cross-env NODE_ENV=development nodemon src --exec babel-node"
   },
   "keywords": [
     "node",
