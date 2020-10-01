@@ -1,6 +1,6 @@
 {
   "name": "alain-boutique-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Control de ventas Alain Boutique / API",
   "main": "index.js",
   "scripts": {
