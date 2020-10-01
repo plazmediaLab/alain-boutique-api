@@ -1,13 +1,16 @@
 {
   "name": "alain-boutique-api",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.18.2"
+  },
   "description": "Control de ventas Alain Boutique / API",
   "main": "index.js",
   "scripts": {
     "postinstall": "npm run build",
-    "build": "cross-env NODE_ENV=production babel src --out-dir build",
-    "start": "cross-env NODE_ENV=production node build",
-    "dev": "cross-env NODE_ENV=development nodemon src --exec babel-node"
+    "build": "NODE_ENV=production babel src --out-dir build",
+    "start": "NODE_ENV=production node build",
+    "dev": "NODE_ENV=development nodemon src --exec babel-node"
   },
   "keywords": [
     "node",
@@ -30,13 +33,13 @@
     "morgan": "^1.10.0",
     "sanitize": "^2.1.0",
     "shortid": "^2.2.15",
-    "slugify": "^1.4.5",
+    "slugify": "^1.4.5"
+  },
+  "devDependencies": {
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",
     "@babel/node": "^7.10.5",
-    "@babel/preset-env": "^7.11.5"
-  },
-  "devDependencies": {
+    "@babel/preset-env": "^7.11.5",
     "nodemon": "^2.0.4"
   }
 }
