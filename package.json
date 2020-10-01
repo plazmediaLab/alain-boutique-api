@@ -1,15 +1,13 @@
 {
   "name": "alain-boutique-api",
   "version": "1.0.0",
-  "engines": {
-    "node": "12.18.2"
-  },
   "description": "Control de ventas Alain Boutique / API",
   "main": "index.js",
   "scripts": {
     "postinstall": "npm run build",
     "build": "babel src --out-dir build",
     "start": "node build/index.js",
+    "serve": "node ./build/index.js",
     "dev": "nodemon src --exec babel-node"
   },
   "keywords": [
@@ -28,7 +26,7 @@
     "express": "^4.17.1",
     "helmet": "^4.1.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.10.6",
+    "mongoose": "^5.10.7",
     "mongoose-unique-validation": "^0.1.0",
     "morgan": "^1.10.0",
     "sanitize": "^2.1.0",
@@ -39,6 +37,7 @@
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",
     "@babel/node": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
     "nodemon": "^2.0.4"
   }

@@ -3,7 +3,6 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import pkg from '../package.json';
 import sanitize from 'sanitize';
-import { RoleSeeder } from './libs/InitialSetups';
 import { decodedToken, userAccess } from './middlewares';
 
 /**
@@ -30,7 +29,7 @@ import SummaryRoutes from './routes/SummaryRoutes';
  * Initials Setup
  * 
  */
-RoleSeeder();
+// Add here your initial settings
 
 /**
  * 
