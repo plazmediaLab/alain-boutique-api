@@ -53,15 +53,15 @@ app.use(express.static(path.join(__dirname, 'public')));
  * Set main API info
  * 
  */
-// app.get('/', (req, res) => {
-  // res.json({
-  //   name: app.get('pkg').name,
-  //   author: app.get('pkg').author,
-  //   description: app.get('pkg').description,
-  //   version: app.get('pkg').version,
-  //   license: app.get('pkg').license
-  // });
-// });
+app.get('/', (req, res) => {
+  res.json({
+    name: app.get('pkg').name,
+    author: app.get('pkg').author,
+    description: app.get('pkg').description,
+    version: app.get('pkg').version,
+    license: app.get('pkg').license
+  });
+});
 
 /**
  * 
