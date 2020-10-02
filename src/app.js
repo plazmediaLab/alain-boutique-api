@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import pkg from '../package.json';
@@ -42,18 +43,25 @@ app.use(morgan('dev'));
 
 /**
  * 
+ * Public dir || Static files
+ * 
+ */
+app.use(express.static(path.join(__dirname, 'public')));
+
+/**
+ * 
  * Set main API info
  * 
  */
-app.get('/', (req, res) => {
-  res.json({
-    name: app.get('pkg').name,
-    author: app.get('pkg').author,
-    description: app.get('pkg').description,
-    version: app.get('pkg').version,
-    license: app.get('pkg').license
-  })
-});
+// app.get('/', (req, res) => {
+  // res.json({
+  //   name: app.get('pkg').name,
+  //   author: app.get('pkg').author,
+  //   description: app.get('pkg').description,
+  //   version: app.get('pkg').version,
+  //   license: app.get('pkg').license
+  // });
+// });
 
 /**
  * 
