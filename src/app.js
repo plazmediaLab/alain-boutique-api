@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import path from 'path';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
@@ -36,6 +37,7 @@ import SummaryRoutes from './routes/SummaryRoutes';
  * Middlewares
  * 
  */
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false })); //-> parse application/x-www-form-urlencoded 
 app.use(bodyParser.json()); // -> parse application/json
 app.use(express.json());
