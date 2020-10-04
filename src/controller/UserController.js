@@ -60,7 +60,7 @@ class UserController {
       const userFound = await User.findOne({email: req.body.email});
 
       // If the user does not exist
-      if(!userFound) throw {ok: false, error: 400, message: 'Los datos para iniciar sesión son incorrectos.'};
+      if(!userFound) throw {ok: false, error: 404, message: 'No hay usuario registrado con estos datos.'};
 
       // Check that the password is valid
       const matchPass = await User.comparePassword(req.body.password, userFound.password);
