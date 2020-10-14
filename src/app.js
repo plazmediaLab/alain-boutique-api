@@ -7,17 +7,17 @@ import pkg from '../package.json';
 import { decodedToken, userAccess } from './middlewares';
 
 /**
- * 
+ *
  * Express instance
- * 
+ *
  */
 const app = express();
 app.set('pkg', pkg);
 
 /**
- * 
+ *
  * Routers import
- * 
+ *
  */
 import UserRoutes from './routes/UserRoutes';
 import GroupRoutes from './routes/GroupRoutes';
@@ -26,34 +26,34 @@ import ParnerthRoutes from './routes/ParnerthRoutes';
 import SummaryRoutes from './routes/SummaryRoutes';
 
 /**
- * 
+ *
  * Initials Setup
- * 
+ *
  */
 // Add here your initial settings
 
 /**
- * 
+ *
  * Middlewares
- * 
+ *
  */
-app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false })); //-> parse application/x-www-form-urlencoded 
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false })); //-> parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // -> parse application/json
 app.use(express.json());
 app.use(morgan('dev'));
 
 /**
- * 
+ *
  * Public dir || Static files
- * 
+ *
  */
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
- * 
+ *
  * Set main API info
- * 
+ *
  */
 app.get('/', (req, res) => {
   res.json({
@@ -66,9 +66,9 @@ app.get('/', (req, res) => {
 });
 
 /**
- * 
+ *
  * Set routes
- * 
+ *
  */
 app.use('/api/user', UserRoutes);
 app.use('/api/group', decodedToken, userAccess, GroupRoutes);
@@ -80,5 +80,5 @@ app.use('/api/summary', decodedToken, userAccess, SummaryRoutes);
  * Set routes
  */
 export default app;
- /**
-  * ============================= */ 
+/**
+ * ============================= */

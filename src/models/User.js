@@ -1,30 +1,31 @@
 import mongoose, { Schema } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validation'
+import uniqueValidator from 'mongoose-unique-validation';
 import bcrypt from 'bcryptjs';
-import shortid from  'shortid';
+import shortid from 'shortid';
 
-const validateEmail = function(email) {
+const validateEmail = function (email) {
+  // eslint-disable-next-line
   var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return re.test(email)
+  return re.test(email);
 };
 
 const UserSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "El NOMBRE es requierido."],
-      trim: [true, "EL NOMBRE no puede contener solamenete caracteres en blanco."]
+      required: [true, 'El NOMBRE es requierido.'],
+      trim: [true, 'EL NOMBRE no puede contener solamenete caracteres en blanco.']
     },
     email: {
       type: String,
-      required: [true, "El EMAIL es requerido."],
+      required: [true, 'El EMAIL es requerido.'],
       unique: '{PATH} tiene que ser único, ya existe otro registro con el mismo valor.',
       validate: [validateEmail, 'Introdusca un CORREO electrónico valido.'],
       trim: true
     },
     password: {
       type: String,
-      required: [true, 'La CONTRASEÑA es requerida.'],
+      required: [true, 'La CONTRASEÑA es requerida.']
     },
     img: {
       type: String,
@@ -36,14 +37,16 @@ const UserSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      required: [true, "El ROLE es requerido."],
+      required: [true, 'El ROLE es requerido.'],
       default: 'USER_ROLE',
       enum: ['USER_ROLE', 'PARNERTH_ROLE']
     },
-    parnerth: [{
-      ref: 'User',
-      type: Schema.Types.ObjectId
-    }],
+    parnerth: [
+      {
+        ref: 'User',
+        type: Schema.Types.ObjectId
+      }
+    ],
     parnerth_key: {
       type: String
     }
@@ -63,12 +66,12 @@ UserSchema.statics.comparePassword = async (password, recivePassword) => {
   return await bcrypt.compare(password, recivePassword);
 };
 UserSchema.statics.HashParnerthKey = () => {
-  let key = shortid.generate(); 
+  let key = shortid.generate();
   return key;
 };
 
 // Hidde Password
-UserSchema.methods.toJSON = function() {
+UserSchema.methods.toJSON = function () {
   let user = this;
   let userObject = user.toObject();
 

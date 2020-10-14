@@ -7,23 +7,27 @@ const GroupSchema = mongoose.Schema(
     name: {
       type: String,
       required: [true, 'El NOMBRE del grupo es requerido.'],
-      trim: true,
+      trim: true
     },
     slug: {
-      type: String,
+      type: String
     },
     color: {
       type: String,
       default: null
     },
-    user_id: [{
-      ref: "User",
-      type: Schema.Types.ObjectId
-    }],
-    parnerth: [{
-      ref: 'User',
-      type: Schema.Types.ObjectId
-    }]
+    user_id: [
+      {
+        ref: 'User',
+        type: Schema.Types.ObjectId
+      }
+    ],
+    parnerth: [
+      {
+        ref: 'User',
+        type: Schema.Types.ObjectId
+      }
+    ]
   },
   {
     timestamps: true,
@@ -35,7 +39,7 @@ const GroupSchema = mongoose.Schema(
 GroupSchema.plugin(uniqueValidator);
 
 // Hidde fields
-GroupSchema.methods.toJSON = function() {
+GroupSchema.methods.toJSON = function () {
   let user = this;
   let userObject = user.toObject();
 
@@ -52,8 +56,8 @@ GroupSchema.methods.toJSON = function() {
  * deleteOne
  * init => sync
  */
-GroupSchema.pre('validate', function(next){
-  this.slug = slugifyProccess(this.name)
+GroupSchema.pre('validate', function (next) {
+  this.slug = slugifyProccess(this.name);
   next();
 });
 

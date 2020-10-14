@@ -6,10 +6,15 @@ import SummaryController from '../controller/SummaryController';
 const routes = new Router();
 
 /**
-* 
-* @method Index
-*/
-routes.get('/', [/* Middlewares */], SummaryController.index);
-
+ *
+ * @method Index
+ */
+routes.get(
+  '/',
+  [
+    /* Middlewares */
+  ],
+  SummaryController.index
+);
 
 module.exports = routes;
