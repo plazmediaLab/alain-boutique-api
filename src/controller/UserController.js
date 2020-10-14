@@ -32,15 +32,13 @@ class UserController {
       });
 
       // Save user
-      const saveUser = await newUser.save();
-
-      // Create token
-      const token = jwt.sign({ id: saveUser._id }, 'nada', {
-        expiresIn: '2h'
-      });
+      await newUser.save();
 
       // Success response
-      return res.status(200).json({ ok: true, authorization: token, user: saveUser });
+      return res.status(200).json({
+        ok: true,
+        user: 'User created successfully'
+      });
     } catch (error) {
       return res.status(400).json(error);
     }
@@ -76,10 +74,36 @@ class UserController {
         expiresIn: '2h'
       });
 
-      return res.json({ ok: true, authorization: token, user: userFound });
+      return res.json({ ok: true, authorization: token /*, user: userFound*/ });
     } catch (error) {
       return res.status(400).json(error);
     }
+  }
+
+  /**
+   *
+   * Auth
+   *
+   */
+  async auth(req, res, next) {
+    const token = req.headers['x-access-token'];
+
+    if (!token) return res.status(401).json(null);
+
+    jwt.verify(token, process.env.SECRET_WORD, async (err, decoded) => {
+      if (err) {
+        return res.status(401).json(null);
+      }
+
+      // decoded.id;
+
+      await User.findById(decoded.id, (err, data) => {
+        err && res.status(404).json(null);
+        return res.status(200).json({ ok: true, data });
+      });
+
+      next();
+    });
   }
 }
 
