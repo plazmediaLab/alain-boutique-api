@@ -74,7 +74,7 @@ class UserController {
         expiresIn: '2h'
       });
 
-      return res.json({ ok: true, authorization: token /*, user: userFound*/ });
+      return res.json({ ok: true, authorization: token, user: userFound });
     } catch (error) {
       return res.status(400).json(error);
     }
