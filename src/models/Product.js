@@ -8,13 +8,18 @@ const ProductSchema = mongoose.Schema(
     },
     value: {
       type: Number,
-      required: [true, 'El NOMBRE del producto es requerido.'],
+      required: [true, 'El VALOR del producto es requerido.'],
       min: [0, 'El VALOR no puede ser menor a cero.'],
+      default: 0
+    },
+    value_off: {
+      type: Number,
+      min: [0, 'El DESCUENTO no puede ser menor a cero.'],
       default: 0
     },
     price: {
       type: Number,
-      required: [true, 'El NOMBRE del producto es requerido.'],
+      required: [true, 'El PRECIO del producto es requerido.'],
       min: [0, 'El PRECIO no puede ser menor a cero.'],
       default: 0
     },
@@ -41,6 +46,16 @@ const ProductSchema = mongoose.Schema(
       type: String,
       defauld: 'STOCK',
       enum: ['STOCK', 'ACTIVE', 'SOLD']
+    },
+    status: {
+      type: String,
+      defauld: 'USED',
+      enum: ['USED', 'NEW', 'PROMOTION']
+    },
+    off: {
+      type: Number,
+      defauld: 0,
+      min: [0, 'El PORCENTAJE de descuento no puede ser menor a 0%']
     }
   },
   {
@@ -53,8 +68,14 @@ const ProductSchema = mongoose.Schema(
 ProductSchema.pre('validate', function (next) {
   if (this.state === 'SOLD') {
     this.sold_date = Date.now();
-  } else if (this.state === 'STOCK' || this.state === 'ACTIVE') {
+  } else {
     this.sold_date = null;
+  }
+  if (this.off > 0) {
+    const discount = (this.value * this.off) / 100;
+    this.value_off = this.value - discount;
+  } else {
+    this.off = 0;
   }
   next();
 });

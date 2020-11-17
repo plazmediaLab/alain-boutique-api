@@ -2,7 +2,7 @@ import Product from '../models/Product';
 
 class ProductController {
   async store(req, res) {
-    const { name, value, price, description, state, group } = req.body;
+    const { description, group, name, off, price, state, status, value, value_off } = req.body;
 
     let responseErr = {};
 
@@ -11,13 +11,16 @@ class ProductController {
 
     try {
       const newProduct = new Product({
-        name,
-        value,
-        price,
         description,
+        group,
+        name,
+        off,
+        price,
         state,
+        status,
         user_id: [req.user_id],
-        group
+        value,
+        value_off
       });
 
       if (Object.keys(responseErr).length > 0) {
