@@ -72,7 +72,7 @@ ProductSchema.pre('validate', function (next) {
     this.sold_date = null;
   }
   if (this.off > 0) {
-    const discount = (this.value * this.off) / 100;
+    const discount = Math.floor((this.value * this.off) / 100);
     this.value_off = this.value - discount;
   } else {
     this.off = 0;
