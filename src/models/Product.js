@@ -23,6 +23,11 @@ const ProductSchema = mongoose.Schema(
       min: [0, 'El PRECIO no puede ser menor a cero.'],
       default: 0
     },
+    profit: {
+      type: Number,
+      min: [0, 'El PRECIO no puede ser menor a cero.'],
+      default: 0
+    },
     user_id: [
       {
         ref: 'User',
@@ -74,8 +79,10 @@ ProductSchema.pre('validate', function (next) {
   if (this.off > 0) {
     const discount = Math.floor((this.value * this.off) / 100);
     this.value_off = this.value - discount;
+    this.profit = this.value_off - this.price;
   } else {
     this.off = 0;
+    this.profit = this.value - this.price;
   }
   next();
 });

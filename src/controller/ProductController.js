@@ -2,7 +2,18 @@ import Product from '../models/Product';
 
 class ProductController {
   async store(req, res) {
-    const { description, group, name, off, price, state, status, value, value_off } = req.body;
+    const {
+      description,
+      group,
+      name,
+      off,
+      price,
+      profit,
+      state,
+      status,
+      value,
+      value_off
+    } = req.body;
 
     let responseErr = {};
 
@@ -16,6 +27,7 @@ class ProductController {
         name,
         off,
         price,
+        profit,
         state,
         status,
         user_id: [req.user_id],
